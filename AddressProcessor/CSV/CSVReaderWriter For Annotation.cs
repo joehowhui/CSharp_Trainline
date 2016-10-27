@@ -8,9 +8,13 @@ namespace AddressProcessing.CSV
 
         Please leave the rest of this file as it is so we can discuss your concerns during the next stage of the interview process.
         
-        *)
-        *)
-        *)
+        *)Refactor constants (FIRST_COLUMN, SECOND_COLUMN) as public class level instead of separate individual method sub-routines (Write, Read)
+        *)Use Try…Catch…Finally in Open sub-routine. Catch the exception if user does not have the permission to open the CSV file, especially if the CSV file is opened from a server location. 
+        *)The “public bool Read(string column1, string column2)” is redundant. It can be removed. The “public bool Read(out string column1, out string column2)” would be sufficient as it can returns true or false as indication of a successful read operation and it also returns values of column 1 and column 2.
+        *)It would be nice if the engineer can leave comments in XML format like    
+           /// <summary>        
+           /// Store for the name property</summary>
+           This will improve code reusability and readability as well as easier to maintain.
     */
 
     public class CSVReaderWriterForAnnotation
