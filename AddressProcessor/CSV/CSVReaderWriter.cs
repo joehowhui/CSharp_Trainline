@@ -4,14 +4,24 @@ using System.IO;
 namespace AddressProcessing.CSV
 {
     /*
-        2) Refactor this class into clean, elegant, rock-solid & well performing code, without over-engineering.
+         2) Refactor this class into clean, elegant, rock-solid & well performing code, without over-engineering.
            Assume this code is in production and backwards compatibility must be maintained.
+
+        Changes:
+        2a) Refactor the constant "FIRST_COLUMN", "SECOND_COLUMN"
+        2b) Refactor Column1, Column2 values from a sub-routine called "GetColumnValues"
+        2c) To maintain backwards compatibility, "public bool Read(string column1, string column2)" remains.
     */
 
     public class CSVReaderWriter
     {
         private StreamReader _readerStream = null;
         private StreamWriter _writerStream = null;
+
+        #region Constant
+        const int FIRST_COLUMN = 0;
+        const int SECOND_COLUMN = 1;
+        #endregion
 
         [Flags]
         public enum Mode { Read = 1, Write = 2 };
@@ -51,52 +61,30 @@ namespace AddressProcessing.CSV
 
         public bool Read(string column1, string column2)
         {
-            const int FIRST_COLUMN = 0;
-            const int SECOND_COLUMN = 1;
-
             string line;
-            string[] columns;
-
-            char[] separator = { '\t' };
-
             line = ReadLine();
-            columns = line.Split(separator);
-
-            if (columns.Length == 0)
-            {
-                column1 = null;
-                column2 = null;
-
-                return false;
-            }
-            else
-            {
-                column1 = columns[FIRST_COLUMN];
-                column2 = columns[SECOND_COLUMN];
-
-                return true;
-            }
+            return GetColumnValues(line, out column1, out column2);
         }
 
         public bool Read(out string column1, out string column2)
         {
-            const int FIRST_COLUMN = 0;
-            const int SECOND_COLUMN = 1;
-
             string line;
-            string[] columns;
-
-            char[] separator = { '\t' };
-
             line = ReadLine();
 
             if (line == null)
             {
                 column1 = null;
                 column2 = null;
-
                 return false;
             }
+
+            return GetColumnValues(line, out column1, out column2);
+        }
+
+        private bool GetColumnValues(string line, out string column1, out string column2)
+        {
+            char[] separator = { '\t' };
+            string[] columns;
 
             columns = line.Split(separator);
 
@@ -106,7 +94,7 @@ namespace AddressProcessing.CSV
                 column2 = null;
 
                 return false;
-            } 
+            }
             else
             {
                 column1 = columns[FIRST_COLUMN];
@@ -115,7 +103,7 @@ namespace AddressProcessing.CSV
                 return true;
             }
         }
-
+        
         private void WriteLine(string line)
         {
             _writerStream.WriteLine(line);
